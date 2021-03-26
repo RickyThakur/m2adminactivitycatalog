@@ -75,14 +75,17 @@ class ProductSaveAfter implements ObserverInterface
 
         // Stock Information 
         $oldStockData = $product->getOrigData("quantity_and_stock_status");
-        $newStockData = $product->getData("quantity_and_stock_status");
-       
-        if(isset($newStockData['qty'])){
-            if ($oldStockData['qty'] !== $newStockData['qty']) {
+        //$newStockData = $product->getData("quantity_and_stock_status");
+        //echo "<pre>"; print_r($oldStockData);
+        $stockItem = $product->getExtensionAttributes()->getStockItem();
+        //print_r($stockItem->getQty());
+        //echo "<pre>"; var_dump($newStockData); die;
+        //if(isset($newStockData['qty'])){
+            if ($oldStockData['qty'] !== $stockItem->getQty()) {
                 $updatFLag = 1;
-                $event['qty'] = ['old' => $oldStockData['qty'], 'new' => $newStockData['qty']];
+                $event['qty'] = ['old' => $oldStockData['qty'], 'new' => $stockItem->getQty()];
             }
-        }
+        //}
         
 
         if ($updatFLag) {
