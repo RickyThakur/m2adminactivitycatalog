@@ -100,11 +100,11 @@ class ProductSaveAfter implements ObserverInterface
         $isInStock = $stauts['is_in_stock'];
         //var_dump($stauts); die;
 
-        $this->_logger->info("original = " . $oldIsInStock);
-        $this->_logger->info(print_r($product->getOrigData("quantity_and_stock_status"), true));
-        $arr = $product->getStockData();
-        $this->_logger->info("simple = " . $isInStock);
-        $this->_logger->info(print_r($arr['is_in_stock'], true));
+        // $this->_logger->info("original = " . $oldIsInStock);
+        // $this->_logger->info(print_r($product->getOrigData("quantity_and_stock_status"), true));
+        // $arr = $product->getStockData();
+        // $this->_logger->info("simple = " . $isInStock);
+        // $this->_logger->info(print_r($arr['is_in_stock'], true));
 
 
         if ($oldIsInStock !== $isInStock) {
