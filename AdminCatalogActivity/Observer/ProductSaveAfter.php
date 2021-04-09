@@ -49,8 +49,11 @@ class ProductSaveAfter implements ObserverInterface
         // $pro  = $product->getOrigData();
         // $attributes = $product->getAttributes();
         // foreach ($attributes as $a) {
-        //     print_r($product->getOrigData("quantity_and_stock_status"));
-        //     print_r($product->getData("quantity_and_stock_status"));
+
+        //var_dump($arr); die;
+
+        //  print_r($product->getOrigData("quantity_and_stock_status"));
+        //print_r($product->getData("quantity_and_stock_status"));
         //     die;
         // }
 
@@ -81,12 +84,34 @@ class ProductSaveAfter implements ObserverInterface
         //print_r($stockItem->getQty());
         //echo "<pre>"; var_dump($newStockData); die;
         //if(isset($newStockData['qty'])){
-            if ($oldStockData['qty'] !== $stockItem->getQty()) {
-                $updatFLag = 1;
-                $event['qty'] = ['old' => $oldStockData['qty'], 'new' => $stockItem->getQty()];
-            }
-        //}
-        
+
+        //CHECK FOR QTY CHANGES
+        if ($oldStockData['qty'] !== $stockItem->getQty()) {
+            $updatFLag = 1;
+            $event['qty'] = ['old' => $oldStockData['qty'], 'new' => $stockItem->getQty()];
+        }
+
+        //CHECK FOR STOCK STATUS CHANGES
+        $oldStatus = $product->getOrigData("quantity_and_stock_status");
+        //var_dump($oldStatus); die;
+        $oldIsInStock = ($oldStatus['is_in_stock']) ? "1" : "0";
+
+        $stauts = $product->getStockData();
+        $isInStock = $stauts['is_in_stock'];
+        //var_dump($stauts); die;
+
+        $this->_logger->info("original = " . $oldIsInStock);
+        $this->_logger->info(print_r($product->getOrigData("quantity_and_stock_status"), true));
+        $arr = $product->getStockData();
+        $this->_logger->info("simple = " . $isInStock);
+        $this->_logger->info(print_r($arr['is_in_stock'], true));
+
+
+        if ($oldIsInStock !== $isInStock) {
+            $updatFLag = 1;
+            $label = ($isInStock) ? __("In Stock") : __("Out of Stock");
+            $event['stock_status'] = "Switched to " . $label;
+        }
 
         if ($updatFLag) {
             $event["updated_at"] = $product->getData('updated_at');
